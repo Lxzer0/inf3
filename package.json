@@ -9,15 +9,19 @@
         "lint": "next lint"
     },
     "dependencies": {
+        "kysely": "^0.27.6",
         "next": "^15.2.4",
+        "pg": "^8.15.6",
         "react": "^19.1.0",
         "react-dom": "^19.1.0"
     },
     "devDependencies": {
         "@tailwindcss/postcss": "^4",
         "@types/node": "^22",
+        "@types/pg": "^8.11.14",
         "@types/react": "^19",
         "@types/react-dom": "^19",
+        "kysely-codegen": "^0.18.3",
         "tailwindcss": "^4",
         "typescript": "^5"
     }
