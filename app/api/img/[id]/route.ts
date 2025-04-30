@@ -1,13 +1,11 @@
-import { db } from '@/app/lib/database'
-import { NextRequest, NextResponse } from 'next/server';
+import { db } from "@/app/lib/database";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: number }> }) {
+export async function GET(_: NextRequest, { params }: { params: Promise<{ id: number }> }) {
     let { id }  = await params;
-    
-    if (!id) {
-        return new NextResponse(JSON.stringify({ error: 'Missing params' }), { status: 400 });
-    }
-    
+
+    if (!id) return new NextResponse(JSON.stringify({ error: 'Missing params' }), { status: 400 });
+
     try { id = Number(id) } catch (error) { return new NextResponse(JSON.stringify({ error: 'Invalid params' }), { status: 400 }); }
 
     let image;
@@ -23,9 +21,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         return new NextResponse(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
     }
 
-    if (!image) {
-        return new NextResponse(JSON.stringify({ error: 'Image not found' }), { status: 404 });
-    }
+    if (!image) return new NextResponse(JSON.stringify({ error: 'Image not found' }), { status: 404 });
 
     return new NextResponse(image.data, {
         status: 200,
