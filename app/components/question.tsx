@@ -1,18 +1,12 @@
 "use client";
-import { questionType } from "@/app/lib/questions";
-import { shuffleArray } from "@/app/lib/utils";
+import { newQuestionType } from "@/app/lib/questions";
+import { transformQuestions } from "@/app/lib/utils";
 import { useState } from "react";
 
-type newQuestionType = questionType & {
-    answers: string[];
-    selected: number;
-    correctI: number;
-};
-
-export function QuestionList({ questions }: { questions: questionType[] }) {
+export function QuestionList({ questions }: { questions: newQuestionType[] }) {
     const [cid, setCid] = useState<number>(0);
     const [ongoing, setOngoing] = useState<boolean>(true);
-    const [nq, setNq] = useState<newQuestionType[]>(transformQuestions(questions));
+    const [nq, setNq] = useState<newQuestionType[]>(questions);
 
     function handleClick(index: number) {
         setNq((prev) => {
@@ -29,31 +23,14 @@ export function QuestionList({ questions }: { questions: questionType[] }) {
         setCid(0);
     }
 
-    function transformQuestions(questions: questionType[]): newQuestionType[] {
-        return questions.map((q) => {
-            const answers = shuffleArray([
-                q.answer_correct,
-                q.answer_incorrect0,
-                q.answer_incorrect1,
-                q.answer_incorrect2,
-            ]);
-            return {
-                ...q,
-                selected: -1,
-                answers,
-                correctI: answers.findIndex((e) => e === q.answer_correct),
-            };
-        });
-    }
-
     async function newQuestions() {
         try {
             const response = await fetch('/api/questions');
             if (!response.ok) {
                 throw new Error('Fetch failed');
             }
-            const newQuestions: questionType[] = await response.json();
-            setNq(transformQuestions(newQuestions));
+            const newQuestions: newQuestionType[] = transformQuestions(await response.json());
+            setNq(newQuestions);
             setCid(0);
             setOngoing(true);
         } catch (error) {

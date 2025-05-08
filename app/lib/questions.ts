@@ -5,6 +5,12 @@ import { shuffleArray } from "@/app/lib/utils";
 
 export type questionType = Awaited<ReturnType<typeof getQuestions>>[0];
 
+export type newQuestionType = questionType & {
+    answers: string[];
+    selected: number;
+    correctI: number;
+};
+
 let cachedQuestions: Awaited<ReturnType<typeof fetchQuestions>> | null = null;
 
 async function fetchQuestions() {
