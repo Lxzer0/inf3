@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { QuestionList } from "@/app/components/question";
 import { getQuestions } from "@/app/lib/questions";
 import { transformQuestions } from "@/app/lib/utils";
