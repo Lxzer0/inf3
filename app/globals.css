@@ -3,3 +3,7 @@
 .btn {
     @apply hover:text-black hover:bg-white
 }
+
+.crisp-edges {
+    image-rendering: crisp-edges;
+}
