@@ -141,22 +141,33 @@ function Question({
     onSelect: (index: number) => void;
     update: boolean;
 }) {
+    const [isZoomed, setIsZoomed] = useState(false);
+
+    useEffect(() => {
+        setIsZoomed(false);
+    }, [el])
+
     return (
-        <div className="border border-white text-xl p-4 flex flex-col gap-4 max-w-2/3">
-            <div>
-                {num}. {el.question}
+        <>
+            <div className="border border-white text-xl p-4 flex flex-col gap-4 max-w-2/3">
+                <div>
+                    {num}. {el.question}
+                </div>
+                <div className="text-lg flex flex-col gap-1">
+                    {el.answers.map((e, i) => (
+                        <div key={i} className={`cursor-pointer${getClasses(i, el, update)}`} onClick={() => onSelect(i)}>
+                            {"ABCD"[i] || "what"}. {e}
+                        </div>
+                    ))}
+                </div>
+                {el.image ? (
+                    <img className="max-w-full flex self-center cursor-zoom-in" src={`/api/img/${el.image}`} alt="" onClick={() => setIsZoomed(true)} />
+                ) : null}
             </div>
-            <div className="text-lg flex flex-col gap-1">
-                {el.answers.map((e, i) => (
-                    <div key={i} className={`cursor-pointer${getClasses(i, el, update)}`} onClick={() => onSelect(i)}>
-                        {"ABCD"[i] || "what"}. {e}
-                    </div>
-                ))}
-            </div>
-            {el.image ? (
-                <img className="max-w-full" src={`/api/img/${el.image}`} alt="" />
+            {isZoomed ? (
+                <img className="absolute top-0 w-screen h-screen object-contain cursor-zoom-out backdrop-blur-md backdrop-brightness-50 crisp-edges" src={`/api/img/${el.image}`} alt="" onClick={() => setIsZoomed(false)} />
             ) : null}
-        </div>
+        </>
     );
 }
 
