@@ -2,6 +2,7 @@
 import { newQuestionType } from "@/app/lib/questions";
 import { transformQuestions } from "@/app/lib/utils";
 import { useEffect, useState } from "react";
+import { isMobile } from "react-device-detect";
 
 export function QuestionList({ questions }: { questions: newQuestionType[] }) {
     type data = {
@@ -14,12 +15,31 @@ export function QuestionList({ questions }: { questions: newQuestionType[] }) {
         ongoing: true,
         questions,
     });
+    const [mobile, setMobile] = useState(false);
 
     function handleClick(index: number) {
         setData((prev) => {
             if (prev.currentQuestion >= prev.questions.length) return prev;
             const next = { ...prev };
             if (next.ongoing) next.questions[next.currentQuestion].selected = index;
+            next.currentQuestion++;
+            return next;
+        });
+    }
+
+    function previousQuestion() {
+        setData((prev) => {
+            const next = { ...prev };
+            next.currentQuestion = next.currentQuestion < 1
+                ? next.currentQuestion
+                : next.currentQuestion - 1;
+            return next;
+        });
+    }
+
+    function nextQuestion() {
+        setData((prev) => {
+            const next = { ...prev };
             next.currentQuestion++;
             return next;
         });
@@ -76,21 +96,11 @@ export function QuestionList({ questions }: { questions: newQuestionType[] }) {
                 break;
             }
             case "ArrowRight": {
-                setData((prev) => {
-                    const next = { ...prev };
-                    next.currentQuestion++;
-                    return next;
-                });
+                nextQuestion();
                 break;
             }
             case "ArrowLeft": {
-                setData((prev) => {
-                    const next = { ...prev };
-                    next.currentQuestion = next.currentQuestion < 1
-                        ? next.currentQuestion
-                        : next.currentQuestion - 1;
-                    return next;
-                });
+                previousQuestion();
                 break;
             }
         }
@@ -98,10 +108,14 @@ export function QuestionList({ questions }: { questions: newQuestionType[] }) {
 
     useEffect(() => {
         document.addEventListener("keydown", handleEvent);
+        setMobile(isMobile);
     }, []);
 
     return (
         <div className="w-full h-full flex items-center justify-center">
+            {mobile ? (
+                <div className="h-full w-1/6" onClick={() => previousQuestion()}></div>
+            ) : null}
             {data.currentQuestion < data.questions.length ? (
                 <Question
                     el={data.questions[data.currentQuestion]}
@@ -118,6 +132,9 @@ export function QuestionList({ questions }: { questions: newQuestionType[] }) {
                     ongoing={data.ongoing}
                 />
             )}
+            {mobile ? (
+                <div className="h-full w-1/6" onClick={() => nextQuestion()}></div>
+            ) : null}
         </div>
     );
 }
