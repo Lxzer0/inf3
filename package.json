@@ -6,7 +6,8 @@
         "dev": "next dev --turbopack",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "format": "prettier --write ."
     },
     "dependencies": {
         "kysely": "^0.27.6",
@@ -22,6 +23,8 @@
         "@types/react": "^19",
         "@types/react-dom": "^19",
         "kysely-codegen": "^0.18.3",
+        "prettier": "^3.5.3",
+        "prettier-plugin-tailwindcss": "^0.6.12",
         "tailwindcss": "^4",
         "typescript": "^5"
     }
