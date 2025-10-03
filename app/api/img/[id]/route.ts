@@ -1,20 +1,21 @@
 import { db } from "@/app/lib/database";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(_: NextRequest, { params }: { params: Promise<{ id: number }> }) {
-    let { id }  = await params;
+export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    let { id } = await params;
 
     if (!id) return new NextResponse(JSON.stringify({ error: 'Missing params' }), { status: 400 });
 
-    try { id = Number(id) } catch (error) { return new NextResponse(JSON.stringify({ error: 'Invalid params' }), { status: 400 }); }
+    let idNum = Number(id);
+    if (isNaN(idNum))
+        return new NextResponse(JSON.stringify({ error: "Invalid params" }), { status: 400 });
 
     let image;
-
     try {
         image = await db
             .selectFrom('images')
             .select(['data', 'mime'])
-            .where('id', '=', id)
+            .where('id', '=', idNum)
             .executeTakeFirst();
     } catch (error) {
         console.error('Error fetching image:', error);

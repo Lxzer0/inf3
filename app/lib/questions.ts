@@ -11,9 +11,9 @@ export type newQuestionType = questionType & {
     correctI: number;
 };
 
-let cachedQuestions: Awaited<ReturnType<typeof fetchQuestions>> | null = null;
+let cachedQuestions: Record<string, Awaited<ReturnType<typeof fetchQuestions>>> = {};
 
-async function fetchQuestions() {
+async function fetchQuestions(exam_id: string) {
     return await db
         .selectFrom("questions")
         .select([
@@ -24,11 +24,13 @@ async function fetchQuestions() {
             "answer_incorrect2",
             "image",
         ])
+        .where("exam_id", "=", exam_id)
         .execute();
 }
 
-export async function getQuestions(n: number) {
-    if (cachedQuestions) return shuffleArray(cachedQuestions).slice(0, n);
-    cachedQuestions = await fetchQuestions();
-    return shuffleArray(cachedQuestions).slice(0, n);
+export async function getQuestions(n: number, exam_id: string) {
+    if (cachedQuestions[exam_id])
+        return shuffleArray(cachedQuestions[exam_id]).slice(0, n);
+    cachedQuestions[exam_id] = await fetchQuestions(exam_id);
+    return shuffleArray(cachedQuestions[exam_id]).slice(0, n);
 }

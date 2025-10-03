@@ -3,7 +3,7 @@ import { newQuestionType } from "@/app/lib/questions";
 import { transformQuestions } from "@/app/lib/utils";
 import { useEffect, useState } from "react";
 
-export function QuestionList({ questions }: { questions: newQuestionType[] }) {
+export function QuestionList({ questions, exam_id }: { questions: newQuestionType[], exam_id: string }) {
     type data = {
         currentQuestion: number;
         ongoing: boolean;
@@ -37,7 +37,7 @@ export function QuestionList({ questions }: { questions: newQuestionType[] }) {
 
     async function newQuestions() {
         try {
-            const response = await fetch("/api/questions");
+            const response = await fetch(`/api/questions/${exam_id}`);
             if (!response.ok) throw new Error("Fetch failed");
             setData({
                 currentQuestion: 0,
