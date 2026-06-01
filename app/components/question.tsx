@@ -4,7 +4,7 @@ import { transformQuestions } from "@/app/lib/utils";
 import { useEffect, useState } from "react";
 import { isMobile } from "react-device-detect";
 
-export function QuestionList({ questions, exam_id }: { questions: newQuestionType[], exam_id: string }) {
+export function QuestionList({ questions, exam_id }: { questions: newQuestionType[]; exam_id: string }) {
     type data = {
         currentQuestion: number;
         ongoing: boolean;
@@ -30,9 +30,7 @@ export function QuestionList({ questions, exam_id }: { questions: newQuestionTyp
     function previousQuestion() {
         setData((prev) => {
             const next = { ...prev };
-            next.currentQuestion = next.currentQuestion < 1
-                ? next.currentQuestion
-                : next.currentQuestion - 1;
+            next.currentQuestion = next.currentQuestion < 1 ? next.currentQuestion : next.currentQuestion - 1;
             return next;
         });
     }
@@ -40,8 +38,7 @@ export function QuestionList({ questions, exam_id }: { questions: newQuestionTyp
     function nextQuestion() {
         setData((prev) => {
             const next = { ...prev };
-            if (next.currentQuestion < next.questions.length)
-                next.currentQuestion++;
+            if (next.currentQuestion < next.questions.length) next.currentQuestion++;
             return next;
         });
     }
@@ -63,9 +60,7 @@ export function QuestionList({ questions, exam_id }: { questions: newQuestionTyp
             setData({
                 currentQuestion: 0,
                 ongoing: true,
-                questions: transformQuestions(
-                    await response.json(),
-                ) as newQuestionType[],
+                questions: transformQuestions(await response.json()) as newQuestionType[],
             });
         } catch (error) {
             console.error(error);
@@ -117,9 +112,7 @@ export function QuestionList({ questions, exam_id }: { questions: newQuestionTyp
 
     return (
         <div className="w-full h-full flex items-center justify-center">
-            {mobile ? (
-                <div className="h-full w-1/6" onClick={() => previousQuestion()}></div>
-            ) : null}
+            {mobile ? <div className="h-full w-1/6" onClick={() => previousQuestion()}></div> : null}
             {data.currentQuestion < data.questions.length ? (
                 <Question
                     el={data.questions[data.currentQuestion]}
@@ -136,9 +129,7 @@ export function QuestionList({ questions, exam_id }: { questions: newQuestionTyp
                     ongoing={data.ongoing}
                 />
             )}
-            {mobile ? (
-                <div className="h-full w-1/6" onClick={() => nextQuestion()}></div>
-            ) : null}
+            {mobile ? <div className="h-full w-1/6" onClick={() => nextQuestion()}></div> : null}
         </div>
     );
 }
@@ -166,7 +157,7 @@ function Question({
 
     useEffect(() => {
         setIsZoomed(false);
-    }, [el])
+    }, [el]);
 
     return (
         <>
@@ -176,17 +167,34 @@ function Question({
                 </div>
                 <div className="text-lg flex flex-col gap-1">
                     {el.answers.map((e, i) => (
-                        <div key={i} className={`cursor-pointer${getClasses(i, el, update)}`} onClick={() => onSelect(i)}>
-                            {"ABCD"[i] || "what"}. {e}
-                        </div>
+                        <>
+                            <div
+                                key={i}
+                                className={`cursor-pointer${getClasses(i, el, update)}`}
+                                onClick={() => onSelect(i)}
+                            >
+                                {"ABCD"[i] || "what"}. {e}
+                            </div>
+                            <hr className="my-2 last:hidden opacity-50" />
+                        </>
                     ))}
                 </div>
                 {el.image ? (
-                    <img className="max-w-full flex self-center cursor-zoom-in" src={`/api/img/${el.image}`} alt="" onClick={() => setIsZoomed(true)} />
+                    <img
+                        className="max-w-full flex self-center cursor-zoom-in"
+                        src={`/api/img/${el.image}`}
+                        alt=""
+                        onClick={() => setIsZoomed(true)}
+                    />
                 ) : null}
             </div>
             {isZoomed ? (
-                <img className="absolute top-0 w-screen h-screen object-contain cursor-zoom-out backdrop-blur-md backdrop-brightness-50 crisp-edges" src={`/api/img/${el.image}`} alt="" onClick={() => setIsZoomed(false)} />
+                <img
+                    className="absolute top-0 w-screen h-screen object-contain cursor-zoom-out backdrop-blur-md backdrop-brightness-50 crisp-edges"
+                    src={`/api/img/${el.image}`}
+                    alt=""
+                    onClick={() => setIsZoomed(false)}
+                />
             ) : null}
         </>
     );
@@ -209,10 +217,24 @@ function Last({
         <div className="border border-white text-xl p-4 flex max-w-2/3 items-center justify-center">
             <div className="w-full flex-col flex items-center justify-center gap-8 my-4">
                 <div>Click "Done" to show the stats and answers</div>
-                {ongoing ? null : <div>{correct} correct ({100 * correct / n}%), {n - correct} wrong.</div>}
+                {ongoing ? null : (
+                    <div>
+                        {correct} correct ({(100 * correct) / n}%), {n - correct} wrong.
+                    </div>
+                )}
                 <div className="flex flex-row gap-2">
-                    <button className="border border-white cursor-pointer hover:text-black hover:bg-white p-2" onClick={newQuestions}>Try again</button>
-                    <button className="border border-white cursor-pointer hover:text-black hover:bg-white p-2" onClick={viewQuestions}>Done</button>
+                    <button
+                        className="border border-white cursor-pointer hover:text-black hover:bg-white p-2"
+                        onClick={newQuestions}
+                    >
+                        Try again
+                    </button>
+                    <button
+                        className="border border-white cursor-pointer hover:text-black hover:bg-white p-2"
+                        onClick={viewQuestions}
+                    >
+                        Done
+                    </button>
                 </div>
             </div>
         </div>
